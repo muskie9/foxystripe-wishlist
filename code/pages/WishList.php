@@ -2,31 +2,31 @@
 
 	/**
 	 * WishList class.
-	 * 
+	 *
 	 * @extends Page
 	 */
 	class WishList extends Page{
 
-		private static $singular_name = 'Wish List';
-		private static $plural_name = 'Wish Lists';
-		private static $description = 'Wish List page to track individual user\'s favorite items';
-		
-		private static $allowed_children = array();
-		private static $default_child = '';
-		private static $default_parent = null;
-		private static $can_be_root = true;
+		public static $singular_name = 'Wish List';
+		public static $plural_name = 'Wish Lists';
+		public static $description = 'Wish List page to track individual user\'s favorite items';
 
-		private static $db = array();
-		private static $has_one = array();
-		private static $has_many = array();
-		private static $many_many = array();
-		private static $many_many_extraFields = array();
-		private static $beongs_many_many = array();
+		public static $allowed_children = array();
+		public static $default_child = '';
+		public static $default_parent = null;
+		public static $can_be_root = true;
 
-		private static $casting = array();
-		private static $indexes = array();
-		private static $defaults = array();
-		private static $default_records = array();
+		public static $db = array();
+		public static $has_one = array();
+		public static $has_many = array();
+		public static $many_many = array();
+		public static $many_many_extraFields = array();
+		public static $beongs_many_many = array();
+
+		public static $casting = array();
+		public static $indexes = array();
+		public static $defaults = array();
+		public static $default_records = array();
 
 		public function requireDefaultRecords(){
 			parent::requireDefaultRecords();
@@ -50,7 +50,7 @@
 
 		/**
 		 * getWishList function.
-		 * 
+		 *
 		 * @access public
 		 * @param mixed $memberID (default: null)
 		 * @return void
@@ -63,7 +63,7 @@
 				return false;
 			}
 		}
-		
+
 		static function randomPassword() {
 		    $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 		    $pass = array(); //remember to declare $pass as an array
@@ -118,9 +118,9 @@
 			'remove',
 			'view',
 			'magiclist');
-		
+
 		public function index(){
-			if($member = Member::currentUser()){ 
+			if($member = Member::currentUser()){
 				return $this->customise(array(
 					'MergeLists' => $this->ListCheck(),
 					'WishList' => $member->WishListItems()));
@@ -136,10 +136,10 @@
 					'WishList' => false));
 			}
 		}
-		
+
 		/**
 		 * add function.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -148,7 +148,7 @@
 			if($product = $this->getProduct($productID)){
 				$quantity = (int) $this->request->param('OtherID');
 				if($quantity==0){ $quantity = 1; }
-			
+
 				if($member = $this->getCurrentMember()){
 					$wishList = $member->WishListItems();
 					$wishList->add($product, array('Quantity' => $quantity));
@@ -171,10 +171,10 @@
 			}
 			return $this->redirectBack();
 		}
-		
+
 		/**
 		 * remove function.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -187,7 +187,7 @@
 			$wishes->remove($product);
 			$this->redirect($this->Link());
 		}
-		
+
 		public function view(){
 			if($member = $this->canViewWishList()){
 				$wishList = $member->WishListItems();
@@ -195,7 +195,7 @@
 					$content = 'No items in this wish list';
 					$wishList = false;
 				}else{
-					$content = false;	
+					$content = false;
 				}
 				return $this->customise(array(
 					'Title' => $this->Data()->Title." - ".$member->FirstName." ".$member->Surname,
@@ -207,7 +207,7 @@
 				'Content' => '<p>You don\'t have permission to view this wish list.</p>',
 				'WishList' => false));
 		}
-		
+
 		public function magiclist(){
 			$cookieKey = Cookie::get('WishList');
 			$anonymousList = AnonymousWishList::get()->filter(array('Key' => $cookieKey))->first();
@@ -217,9 +217,9 @@
 			$memberWishList->addMany($anonymousWishList);
 			Cookie::forceExpiry('WishList');
 			return $this->redirect($this->Link());
-			
+
 		}
-		
+
 		public function ListCheck(){
 			if($cookie = Cookie::get('WishList')&&$member = Member::currentUser()){
 				if($cookie == $member->WishListKey){
@@ -230,20 +230,20 @@
 			}
 			return false;
 		}
-		
+
 		/**
 		 * getCurrentMember function.
-		 * 
+		 *
 		 * @access private
 		 * @return void
 		 */
 		private function getCurrentMember(){
 			return Member::currentUser();
 		}
-		
+
 		/**
 		 * getProduct function.
-		 * 
+		 *
 		 * @access private
 		 * @param mixed $productID
 		 * @return void
@@ -254,7 +254,7 @@
 			}
 			return false;
 		}
-		
+
 		public function canViewWishList(){
 			$memberID = $this->request->param('ID');
 			$wishListKey = $this->request->param('OtherID');
