@@ -1,0 +1,19 @@
+{
+  "name": "dynamic/foxystripe-wishlist",
+  "description": "FoxyStripe Wishlist is an add-on to FoxyStripe that allows for an easy to use wishlist system for members.",
+  "keywords": ["silverstripe", "foxycart", "foxystripe", "dynamic", "ecommerce"],
+  "type": "silverstripe-module",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Dynamic Inc",
+      "email": "dev@dynamicdoes.com"
+    }
+  ],
+  "require": {
+    "dynamic/foxystripe-members": "*"
+  },
+  "extra": {
+    "installer-name": "foxystripe-wishlist"
+  }
+}

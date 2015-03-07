@@ -7,26 +7,26 @@
 	 */
 	class WishList extends Page{
 
-		public static $singular_name = 'Wish List';
-		public static $plural_name = 'Wish Lists';
-		public static $description = 'Wish List page to track individual user\'s favorite items';
+		private static $singular_name = 'Wish List';
+        private static $plural_name = 'Wish Lists';
+        private static $description = 'Wish List page to track individual user\'s favorite items';
 
-		public static $allowed_children = array();
-		public static $default_child = '';
-		public static $default_parent = null;
-		public static $can_be_root = true;
+        private static $allowed_children = array();
+        private static $default_child = '';
+        private static $default_parent = null;
+        private static $can_be_root = true;
 
-		public static $db = array();
-		public static $has_one = array();
-		public static $has_many = array();
-		public static $many_many = array();
-		public static $many_many_extraFields = array();
-		public static $beongs_many_many = array();
+        private static $db = array();
+        private static $has_one = array();
+        private static $has_many = array();
+        private static $many_many = array();
+        private static $many_many_extraFields = array();
+        private static $beongs_many_many = array();
 
-		public static $casting = array();
-		public static $indexes = array();
-		public static $defaults = array();
-		public static $default_records = array();
+        private static $casting = array();
+        private static $indexes = array();
+        private static $defaults = array();
+        private static $default_records = array();
 
 		public function requireDefaultRecords(){
 			parent::requireDefaultRecords();
@@ -53,7 +53,7 @@
 		 *
 		 * @access public
 		 * @param mixed $memberID (default: null)
-		 * @return void
+		 * @return mixed
 		 */
 		public function getWishList($memberID=null){
 			if($member = Member::currentUser()){
@@ -64,7 +64,7 @@
 			}
 		}
 
-		static function randomPassword() {
+		public static function randomPassword() {
 		    $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 		    $pass = array(); //remember to declare $pass as an array
 		    $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
@@ -75,25 +75,25 @@
 		    return implode($pass); //turn the array into a string
 		}
 
-		function canCreate($member = null){
+		public function canCreate($member = null){
 			if(WishList::get()->first()){
 				return false;
 			}
 			return true;
 		}
 
-		function canEdit($member = null){
+        public function canEdit($member = null){
 			if(Member::currentUser()){
 				return true;
 			}
 			return false;
 		}
 
-		function canView($member = null){
+        public function canView($member = null){
 			return true;
 		}
 
-		function canDelete($member = null){
+        public function canDelete($member = null){
 			if(Permission::check('ADMIN')){
 				return true;
 			}
@@ -101,7 +101,7 @@
 		}
 
 		//Only allow SuperAdmins to remove this page
-		function canDeleteFromLive($member = null){
+        public function canDeleteFromLive($member = null){
 			if(Permission::check('ADMIN')){
 				return true;
 			}
@@ -112,28 +112,54 @@
 
 	class WishList_Controller extends Page_Controller{
 
-		static $allowed_actions = array(
+		private static $allowed_actions = array(
 			'index',
 			'add',
 			'remove',
 			'view',
-			'magiclist');
+			'magiclist'
+        );
 
 		public function index(){
 			if($member = Member::currentUser()){
-				return $this->customise(array(
-					'MergeLists' => $this->ListCheck(),
-					'WishList' => $member->WishListItems()));
+				return $this->renderWith(
+                    array(
+                        'WishList',
+                        'Page'
+                    ),
+                    array(
+					    'MergeLists' => $this->ListCheck(),
+					    'WishList' => $member->WishListItems()
+                    )
+                );
 			}elseif($Anonymous = AnonymousWishList::get()->filter(array('Key' => Cookie::get('WishList')))->first()){
-				return $this->customise(array(
-					'MergeLists' => false,
-					'WishList' => $Anonymous->Products()));
+				return $this->renderWith(
+                    array(
+                        'WishList',
+                        'Page'
+                    ),
+                    array(
+					    'MergeLists' => false,
+					    'WishList' => $Anonymous->Products()
+                    )
+                );
 			}else{
 				$products = ProductHolder::get()->first();
-				return $this->customise(array(
-					'MergeLists' => false,
-					'Content' => '<a href="/Security/login?BackURL='.$this->Link().'">Login</a> to view your wish list, or <a href="/'.$products->URLSegment.'/">Browse Products</a> to get started.',
-					'WishList' => false));
+
+                $pageData = new ArrayData(
+                    array(
+                        'MergeLists' => false,
+                        'Content' => "<p><a href=\"/Security/login?BackURL=".$this->Link()."\">Login</a> to view your wish list, or <a href=\"/".$products->URLSegment."/\">Browse Products</a> to get started.</p>",
+                        'WishList' => false
+                    )
+                );
+
+				return $pageData->renderWith(
+                    array(
+                        'Page',
+                        'WishList'
+                    )
+                );
 			}
 		}
 
@@ -141,7 +167,7 @@
 		 * add function.
 		 *
 		 * @access public
-		 * @return void
+		 * @return mixed
 		 */
 		public function add(){
 			$productID = $this->request->param('ID');
@@ -235,7 +261,7 @@
 		 * getCurrentMember function.
 		 *
 		 * @access private
-		 * @return void
+		 * @return mixed
 		 */
 		private function getCurrentMember(){
 			return Member::currentUser();
@@ -246,7 +272,7 @@
 		 *
 		 * @access private
 		 * @param mixed $productID
-		 * @return void
+		 * @return mixed
 		 */
 		private function getProduct($productID){
 			if($product = ProductPage::get()->byID($productID)){
