@@ -1,1 +1,1 @@
-<a href="$AddToWishList">Add to Wish List</a>
+

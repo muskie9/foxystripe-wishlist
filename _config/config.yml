@@ -1,5 +1,18 @@
 ---
 Name: foxystripe-wishlist
 After:
+  - 'framework/*'
+  - 'cms/*'
   - 'foxystripe/*'
+Before:
+  - 'quickaddnew/*'
 ---
+Member:
+  extensions:
+    - WishListMemberExtension
+ProductPage:
+  extensions:
+    - WishListProductPageExtension
+ProductPage_Controller:
+  extensions:
+    - WishListProductPageControllerExtension

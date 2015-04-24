@@ -1,6 +1,6 @@
 <?php
 
-	class FoxyListMemberExtension extends DataExtension{
+	class WishListMemberExtension extends DataExtension{
 
 		private static $many_many = array(
 			'WishListGroups' => 'WishListGroup'
